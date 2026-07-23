@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger, killScrollTriggers } from "../lib/gsap.js";
-import { verdictMeta } from "../lib/format.js";
 
 function Emblem() {
   return (
@@ -38,8 +37,7 @@ export default function Landing({ cases, onRunDemo, onDocket }) {
         .from("[data-hero-line]", { yPercent: 110, opacity: 0, duration: 0.85, stagger: 0.1 }, "-=.2")
         .from("[data-hero-sub]", { y: 20, opacity: 0, duration: 0.6 }, "-=.4")
         .from("[data-hero-cta]", { y: 18, opacity: 0, stagger: 0.09, duration: 0.5 }, "-=.35")
-        .from("[data-emblem]", { scale: 0.6, opacity: 0, rotate: -24, duration: 1.1, ease: "power4.out" }, 0.15)
-        .from("[data-ticker]", { opacity: 0, duration: 0.6 }, "-=.3");
+        .from("[data-emblem]", { scale: 0.6, opacity: 0, rotate: -24, duration: 1.1, ease: "power4.out" }, 0.15);
       gsap.utils.toArray("[data-reveal]").forEach((el) => {
         gsap.from(el, {
           scrollTrigger: { trigger: el, start: "top 88%" },
@@ -54,18 +52,6 @@ export default function Landing({ cases, onRunDemo, onDocket }) {
   }, []);
 
   const resolved = cases.filter((c) => c.verdict);
-  const tickerBase = resolved.length
-    ? resolved.map((c) => ({
-        label: `${c.ref} · ${verdictMeta(c.verdict.decision).label} · ${c.verdict.confidence}%`,
-        color: verdictMeta(c.verdict.decision).color,
-      }))
-    : [
-        { label: "THE TRIBUNAL IS IN SESSION", color: "var(--accent-b)" },
-        { label: "AWAITING ITS FIRST VERDICTS", color: "var(--muted)" },
-        { label: "EVERY WARRANTY DESERVES A FAIR HEARING", color: "var(--refund)" },
-      ];
-  const ticker = [...tickerBase, ...tickerBase, ...tickerBase, ...tickerBase];
-
   const openCount = cases.filter((c) => c.status === "open").length;
 
   return (
@@ -104,17 +90,6 @@ export default function Landing({ cases, onRunDemo, onDocket }) {
           </div>
         </div>
         <Emblem />
-      </section>
-
-      <section className="ticker" data-ticker>
-        <div className="ticker-track">
-          {ticker.map((t, i) => (
-            <span className="ticker-item" key={i}>
-              <span className="ticker-dot" style={{ background: t.color }} />
-              {t.label}
-            </span>
-          ))}
-        </div>
       </section>
 
       <section className="acts">
