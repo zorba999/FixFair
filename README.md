@@ -1,82 +1,82 @@
-# FixFair ⚖️ — Warranty & Repair-Claim Adjudicator
+# FixFair
 
-A full-stack GenLayer dApp on the **Bradbury testnet**. Sellers register an item + a
-plain-language warranty. When a buyer files a claim, a GenLayer **Intelligent Contract**
-judges the claim against those terms with an LLM and reaches validator consensus on a
-verdict — **refund / partial / reject** — with no human referee.
+An AI powered warranty and repair claim adjudicator built on [GenLayer](https://genlayer.com), running on the Bradbury testnet.
 
-> Why GenLayer: this needs *judgment* over unstructured text (and optional live web
-> evidence), which a normal EVM smart contract cannot do. It uses
-> `gl.eq_principle.prompt_non_comparative` for the subjective verdict and
-> `gl.eq_principle.strict_eq` + `gl.nondet.web.get` for optional evidence fetching.
+Sellers open an escrow case with warranty terms written in plain language. When something breaks, the buyer files a claim. A GenLayer Intelligent Contract reads the claim against those terms, reasons with an LLM, reaches validator consensus, and returns a verdict: **refund**, **partial**, or **reject**, each with a written reason and a confidence score. No human referee.
 
-## Stack
+## Why GenLayer
 
-- **Intelligent Contract** — `contracts/fixfair.py` (GenLayer GenVM, Python)
-- **Deploy script** — `scripts/deploy.mjs` (Node, `genlayer-js`, signs with a private key)
-- **Frontend** — React + Vite, `genlayer-js` SDK, **EVM wallet adapter** (MetaMask via `window.ethereum`)
+A normal smart contract can move money, but it cannot weigh a sentence like "three switches stopped registering" against a warranty written in human language. FixFair needs judgment over unstructured text, so it runs on GenLayer Intelligent Contracts:
 
-## Prerequisites
+- `gl.eq_principle.prompt_non_comparative` reaches consensus on the subjective verdict.
+- `gl.eq_principle.strict_eq` with `gl.nondet.web.get` pulls optional evidence from the web, with no oracle.
 
-- Node 18+ (tested on Node 24)
-- An EVM wallet (MetaMask) for the browser UI
-- A funded Bradbury testnet key for deployment (faucet from the GenLayer portal)
+## Features
 
-## Setup
+- Escrow cases with plain language warranty terms as the "law" of each case.
+- Claim filing with description, optional evidence URL, and serial number.
+- On chain LLM adjudication with a written reason and a confidence score.
+- A React frontend with GSAP motion, dark and light themes, and an EVM wallet adapter.
 
-```bash
-npm install
-cp .env.example .env    # then put your deploy PRIVATE_KEY inside .env
-```
+## Tech stack
 
-`.env`:
-
-```
-PRIVATE_KEY=0x...   # testnet key with Bradbury faucet funds — NEVER a mainnet key
-```
-
-## 1) Deploy the contract
-
-```bash
-npm run deploy
-```
-
-This signs with `PRIVATE_KEY`, deploys `contracts/fixfair.py` to Bradbury, waits for the
-receipt, and writes the address to `src/lib/deployed.json`.
-
-## 2) Run the frontend
-
-```bash
-npm run dev
-```
-
-Open http://localhost:5173, click **Connect wallet** (the app auto-adds the Bradbury
-network to MetaMask — chainId `4221`, RPC `https://rpc-bradbury.genlayer.com`), then:
-
-1. **Create a case** — item, seller/buyer, warranty terms, amount.
-2. **File a claim** — describe the defect, optionally add an evidence URL + serial.
-3. The contract adjudicates and the card shows the **verdict + reason + confidence**.
+| Layer | Stack |
+| --- | --- |
+| Intelligent Contract | Python (GenLayer GenVM) |
+| Deploy and scripts | Node, `genlayer-js` |
+| Frontend | React, Vite, GSAP |
+| Wallet | EVM adapter via `window.ethereum` |
+| Network | GenLayer Bradbury testnet (chainId 4221) |
 
 ## Contract surface
 
 | Method | Type | Purpose |
 | --- | --- | --- |
-| `create_case(seller, buyer, item, warranty_terms, amount)` | write | open an escrow case |
-| `submit_claim(case_id, description, evidence_url, serial)` | write | adjudicate a claim (LLM + consensus) |
+| `create_case(seller, buyer, item, category, serial, warranty_terms, amount)` | write | open an escrow case |
+| `submit_claim(case_id, description, evidence_url, serial)` | write | adjudicate a claim with LLM plus consensus |
 | `get_case(case_id)` | view | one case as JSON |
 | `get_all_cases()` | view | all cases as a JSON array |
 
-## Notes & next steps
+## Getting started
 
-- The escrow amount is tracked logically (state machine). Wiring real native `GEN`
-  value transfers on settlement is the natural next step (`@gl.public.write.payable`
-  + transfers keyed to the verdict).
-- Adjudication is **text-based**. Image/vision evidence depends on the testnet model —
-  prefer text descriptions or an evidence URL with readable text.
-- An **appeal** flow (re-run with a stricter prompt / more validators on low confidence)
-  is a good follow-up.
+Requirements: Node 18 or newer, an EVM wallet such as MetaMask, and a Bradbury testnet key with faucet funds for deployment.
+
+```bash
+npm install
+cp .env.example .env
+```
+
+Put your deploy key in `.env`:
+
+```
+PRIVATE_KEY=0x...
+```
+
+Deploy the contract. This writes the deployed address to `src/lib/deployed.json`:
+
+```bash
+npm run deploy
+```
+
+Run the frontend:
+
+```bash
+npm run dev
+```
+
+Open http://localhost:5173, connect a wallet, open a case, then file a claim to watch the adjudication.
+
+## Project structure
+
+```
+contracts/fixfair.py     Intelligent Contract
+scripts/deploy.mjs       deploy with a private key
+scripts/interact.mjs     end to end test script
+src/components/          Landing, Docket, Detail, Create, Claim, Adjudicating, Verdict
+src/lib/genlayer.js      reads and writes to the contract
+src/lib/wallet.js        EVM wallet adapter
+```
 
 ## Security
 
-`.env` is gitignored. The provided key is **testnet-only**. Never reuse a deploy key for
-anything with real value.
+`.env` is gitignored and holds a testnet only key. Never reuse a deploy key for anything with real value.
