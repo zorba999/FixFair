@@ -22,7 +22,7 @@ function isTransient(e) {
   );
 }
 
-// Read-only client — no wallet needed.
+// Read-only client, no wallet needed.
 export function getReadClient() {
   return createClient({ chain: testnetBradbury });
 }
@@ -65,7 +65,7 @@ export async function sendWrite(walletAddress, functionName, args, onStatus) {
   const client = getWalletClient(walletAddress);
   for (let i = 1; i <= 10; i++) {
     try {
-      onStatus?.(i === 1 ? "Confirm in your wallet…" : `Network busy — retry ${i}…`);
+      onStatus?.(i === 1 ? "Confirm in your wallet…" : `Network busy, retry ${i}…`);
       return await client.writeContract({
         address: CONTRACT_ADDRESS,
         functionName,
@@ -92,7 +92,7 @@ export async function pollCases(predicate, { timeoutMs = 900000, intervalMs = 70
       onTick?.(last, Math.round((Date.now() - start) / 1000));
       if (predicate(last)) return { cases: last, timedOut: false };
     } catch {
-      /* transient read failure — keep polling */
+      /* transient read failure, keep polling */
     }
     await sleep(intervalMs);
   }

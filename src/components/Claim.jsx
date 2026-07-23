@@ -11,7 +11,7 @@ export default function Claim({ c, onBack, onSubmit, busy, status }) {
 
   const submit = () => {
     setError("");
-    if (!issue.trim()) return setError("Describe what went wrong — the arbiter reads exactly what you write.");
+    if (!issue.trim()) return setError("Describe what went wrong. The arbiter reads exactly what you write.");
     onSubmit({ issue: issue.trim(), evidence: evidence.trim(), serial: serial.trim() || c.serial });
   };
 
@@ -21,7 +21,7 @@ export default function Claim({ c, onBack, onSubmit, busy, status }) {
       <div className="mono-label">File a claim · {c.ref}</div>
       <h1 className="h1-serif h1-serif--md" style={{ margin: "10px 0 6px" }}>State your grievance</h1>
       <p style={{ color: "var(--muted)", margin: "0 0 30px" }}>
-        Regarding <span style={{ color: "var(--ink)" }}>{c.item}</span> — escrow {fmtAmount(c.escrow)}.
+        Regarding <span style={{ color: "var(--ink)" }}>{c.item}</span>, escrow {fmtAmount(c.escrow)}.
       </p>
 
       <div className="form-col">

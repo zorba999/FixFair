@@ -41,7 +41,7 @@ export default function Detail({ c, onBack, onClaim, onReplay }) {
       <div className="detail-grid">
         <div className="doc-card" data-reveal>
           <JusticeWatermark className="doc-watermark" />
-          <div className="mono-label">⎯ The warranty · the law of this case</div>
+          <div className="mono-label">The warranty · the law of this case</div>
           <div className="articles">
             {c.terms.map((t, i) => (
               <div className="article-row" key={i}>
@@ -57,7 +57,7 @@ export default function Detail({ c, onBack, onClaim, onReplay }) {
             <div className="mono-label mono-label--muted">Case facts</div>
             <div className="facts-grid">
               <div><div className="fact-label">ESCROW HELD</div><div className="fact-serif">{fmtAmount(c.escrow)}</div></div>
-              <div><div className="fact-label">SERIAL</div><div className="fact-mono">{c.serial || "—"}</div></div>
+              <div><div className="fact-label">SERIAL</div><div className="fact-mono">{c.serial || "n/a"}</div></div>
               <div><div className="fact-label">SELLER</div><div className="fact-plain">{shortAddr(c.seller)}</div></div>
               <div><div className="fact-label">BUYER</div><div className="fact-plain">{shortAddr(c.buyer)}</div></div>
             </div>

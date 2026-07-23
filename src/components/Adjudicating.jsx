@@ -6,7 +6,7 @@ export default function Adjudicating({ c }) {
 
   const lines = [
     `Loading escrow record ${c?.ref || ""}…`,
-    `Parsing the warranty — ${c?.terms?.length || 0} articles indexed`,
+    `Parsing the warranty, ${c?.terms?.length || 0} articles indexed`,
     "Cross-referencing the claim against covered components…",
     "Testing exclusion clauses for a matching cause…",
     "Verifying serial and evidence attachments…",

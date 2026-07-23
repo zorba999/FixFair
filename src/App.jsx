@@ -16,10 +16,10 @@ const DEMO_VERDICT = {
   decision: "refund",
   confidence: 96,
   reason:
-    "The hot-swap socket failure is a covered board fault, well within the 12-month window. No excluded cause — liquid, drops, or firmware modification — is present. Full escrow is released to the buyer.",
+    "The hot-swap socket failure is a covered board fault, well within the 12-month window. No excluded cause (liquid, drops, or firmware modification) is present. Full escrow is released to the buyer.",
   amount: 189,
   ref: "FX-DEMO",
-  item: "Keychron Q1 Pro — Wireless Mechanical",
+  item: "Keychron Q1 Pro Wireless Mechanical",
 };
 
 export default function App() {
@@ -131,7 +131,7 @@ export default function App() {
       setCases(fresh.slice().reverse());
       const resolved = fresh.find((x) => x.id === c.id);
       if (timedOut || !resolved?.verdict) {
-        flash("The tribunal is taking longer than usual — check the case shortly.", "err");
+        flash("The tribunal is taking longer than usual. Check the case shortly.", "err");
         go("detail");
         return;
       }

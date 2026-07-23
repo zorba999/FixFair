@@ -11,10 +11,10 @@ export const fmtAmount = (n) => Number(n || 0).toLocaleString() + " GEN";
 
 export function verdictMeta(decision) {
   if (decision === "refund")
-    return { label: "REFUND", color: "var(--refund)", glow: "rgba(52,211,153,.4)", sub: "Claim upheld — escrow released to the buyer" };
+    return { label: "REFUND", color: "var(--refund)", glow: "rgba(52,211,153,.4)", sub: "Claim upheld, escrow released to the buyer" };
   if (decision === "partial")
-    return { label: "PARTIAL", color: "var(--partial)", glow: "rgba(251,191,36,.4)", sub: "Split remedy — escrow divided between the parties" };
-  return { label: "REJECT", color: "var(--reject)", glow: "rgba(248,113,113,.4)", sub: "Claim denied — escrow returned to the seller" };
+    return { label: "PARTIAL", color: "var(--partial)", glow: "rgba(251,191,36,.4)", sub: "Split remedy, escrow divided between the parties" };
+  return { label: "REJECT", color: "var(--reject)", glow: "rgba(248,113,113,.4)", sub: "Claim denied, escrow returned to the seller" };
 }
 
 export function settlement(escrow, decision) {

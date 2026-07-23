@@ -68,7 +68,7 @@ export default function Landing({ cases, onRunDemo, onDocket }) {
           </h1>
           <p className="hero-sub" data-hero-sub>
             FixFair holds the money in escrow and lets a neutral AI arbiter weigh each repair claim
-            against the warranty's own words — then delivers a verdict you can read, question, and trust.
+            against the warranty's own words, then delivers a verdict you can read, question, and trust.
           </p>
           <div className="hero-ctas">
             <button className="btn-grad" data-hero-cta onClick={onRunDemo}>Witness a live verdict →</button>
@@ -101,7 +101,7 @@ export default function Landing({ cases, onRunDemo, onDocket }) {
           <div className="act-card" data-reveal>
             <div className="act-roman">I</div>
             <h3>The record is written</h3>
-            <p>A seller opens an escrow case — the item, the parties, the money held, and the warranty spelled out in plain language. Those words become the law of the case.</p>
+            <p>A seller opens an escrow case: the item, the parties, the money held, and the warranty spelled out in plain language. Those words become the law of the case.</p>
           </div>
           <div className="act-card" data-reveal>
             <div className="act-roman">II</div>
@@ -111,7 +111,7 @@ export default function Landing({ cases, onRunDemo, onDocket }) {
           <div className="act-card" data-reveal>
             <div className="act-roman">III</div>
             <h3>The verdict is sealed</h3>
-            <p>The arbiter weighs claim against covenant and rules — refund, partial, or reject — with a written reason and a confidence score. Escrow moves the instant it's decided.</p>
+            <p>The arbiter weighs claim against covenant and rules: refund, partial, or reject, with a written reason and a confidence score. Escrow moves the instant it's decided.</p>
           </div>
         </div>
       </section>
@@ -121,14 +121,14 @@ export default function Landing({ cases, onRunDemo, onDocket }) {
           <div>
             <div className="mono-label">The verdict moment</div>
             <h2>A ruling you can actually read.</h2>
-            <p>Every decision arrives with its reasoning laid bare and a confidence you can weigh. If it's wrong, you can see exactly where — because the reason is written, not hidden behind a policy code.</p>
+            <p>Every decision arrives with its reasoning laid bare and a confidence you can weigh. If it's wrong, you can see exactly where, because the reason is written, not hidden behind a policy code.</p>
             <button className="btn-grad btn-grad--sm" onClick={onRunDemo}>Run a sample case →</button>
           </div>
           <div className="sample-verdict">
             <div className="sample-verdict-blur" />
             <div className="sample-verdict-row"><span>CASE FX-0455</span><span>96% confidence</span></div>
             <div className="sample-verdict-word">REFUND</div>
-            <p>Gimbal instability falls under covered flight-control components. Logs show calm-weather use, no impact events — no exclusion applies.</p>
+            <p>Gimbal instability falls under covered flight-control components. Logs show calm-weather use, no impact events, so no exclusion applies.</p>
             <div className="sample-verdict-foot"><span>Released to buyer</span><span style={{ color: "var(--refund)" }}>640 GEN</span></div>
           </div>
         </div>

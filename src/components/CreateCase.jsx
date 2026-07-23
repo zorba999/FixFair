@@ -4,7 +4,7 @@ import { roman } from "../lib/format.js";
 const CATEGORIES = ["Keyboards", "Drones", "Retro", "Handhelds", "Audio", "Other"];
 
 const STARTER_TERMS = [
-  "Manufacturer defects — dead switches, factory soldering faults, a non-working board out of the box — are covered for 12 months from delivery.",
+  "Manufacturer defects (dead switches, factory soldering faults, a non-working board out of the box) are covered for 12 months from delivery.",
   "Coverage excludes physical damage, liquid ingress, misuse, and any unauthorized modification.",
 ];
 
@@ -51,7 +51,7 @@ export default function CreateCase({ account, onBack, onSubmit, busy, status }) 
         <div className="form-col">
           <div>
             <label className="field-label">Item</label>
-            <input className="input" value={item} onChange={(e) => setItem(e.target.value)} placeholder="e.g. Keychron Q1 Pro — Wireless Mechanical" />
+            <input className="input" value={item} onChange={(e) => setItem(e.target.value)} placeholder="e.g. Keychron Q1 Pro Wireless Mechanical" />
           </div>
 
           <div className="form-grid-2">
@@ -119,7 +119,7 @@ export default function CreateCase({ account, onBack, onSubmit, busy, status }) 
                 <div className="cert-row" key={i}>
                   <div className="cert-roman">Art. {roman(i + 1)}</div>
                   <div className="cert-text" style={{ color: t.trim() ? "var(--doc-ink)" : "var(--muted)" }}>
-                    {t.trim() || "— clause to be written —"}
+                    {t.trim() || "clause to be written…"}
                   </div>
                 </div>
               ))}
