@@ -36,6 +36,8 @@ class FixFair(gl.Contract):
         seller: str,
         buyer: str,
         item: str,
+        category: str,
+        serial: str,
         warranty_terms: str,
         amount: str,
     ) -> str:
@@ -46,6 +48,8 @@ class FixFair(gl.Contract):
             "seller": seller,
             "buyer": buyer,
             "item": item,
+            "category": category,
+            "serial": serial,
             "warranty_terms": warranty_terms,
             "amount": amount,
             "state": "funded",

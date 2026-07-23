@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+:root{
+ --bg:#0b0e14; --bg2:#070a10; --panel:#121826; --panel2:#1a2233;
+ --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.15);
+ --ink:#eef1f8; --muted:rgba(238,241,248,.56);
+ --nav:rgba(9,12,18,.72);
+ --accent-a:#5b8cff; --accent-b:#7c5cff;
+ --refund:#34d399; --partial:#fbbf24; --reject:#f87171;
+ --aura:rgba(124,92,255,.22); --aura2:rgba(91,140,255,.16);
+ --doc:#0f1626; --doc-edge:rgba(124,92,255,.28); --doc-ink:#dfe4f0;
+}
+[data-theme="light"]{
+ --bg:#f2eee4; --bg2:#e8e1d2; --panel:#fffdf8; --panel2:#f6f1e6;
+ --line:rgba(30,25,16,.13); --line2:rgba(30,25,16,.22);
+ --ink:#1b1710; --muted:rgba(27,23,16,.58);
+ --nav:rgba(242,238,228,.74);
+ --accent-a:#4f6fe6; --accent-b:#6a44e6;
+ --refund:#0f9d67; --partial:#b0790a; --reject:#cf463d;
+ --aura:rgba(106,68,230,.13); --aura2:rgba(79,111,230,.12);
+ --doc:#fbf6ea; --doc-edge:rgba(106,68,230,.3); --doc-ink:#2a2418;
+}
+[data-theme] *{transition:background-color .55s ease,color .55s ease,border-color .55s ease,fill .5s ease,box-shadow .55s ease,stroke .5s ease}
+a{color:var(--accent-a);text-decoration:none}
+a:hover{color:var(--accent-b)}
+::selection{background:var(--accent-b);color:#fff}
+[data-knob]{transition:transform .5s cubic-bezier(.65,0,.15,1)}
+[data-theme="light"] [data-knob]{transform:translateX(30px)}
+[data-sun]{opacity:0;transition:opacity .4s ease}
+[data-theme="light"] [data-sun]{opacity:1}
+[data-moon]{opacity:1;transition:opacity .4s ease}
+[data-theme="light"] [data-moon]{opacity:0}
+@keyframes fx-spin{to{transform:rotate(360deg)}}
+@keyframes fx-spinrev{to{transform:rotate(-360deg)}}
+@keyframes fx-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes fx-pulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:.85;transform:scale(1.06)}}
+@keyframes fx-dot{0%,100%{opacity:.2}50%{opacity:1}}
+@keyframes fx-marq{to{transform:translateX(-50%)}}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--line2);border-radius:10px}
+::-webkit-scrollbar-track{background:transparent}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</helmet>
+
+<div data-theme="{{ theme }}" style="min-height:100vh;background:var(--bg);color:var(--ink);font-family:'Space Grotesk',system-ui,sans-serif;position:relative;overflow-x:hidden">
+
+  <div aria-hidden="true" style="position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(60% 50% at 78% 8%,var(--aura),transparent 70%),radial-gradient(50% 40% at 10% 90%,var(--aura2),transparent 70%)"></div>
+
+  <header style="position:sticky;top:0;z-index:60;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:var(--nav);border-bottom:1px solid var(--line)">
+    <div style="max-width:1200px;margin:0 auto;padding:0 24px;height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px">
+      <button onClick="{{ goHome }}" style="display:flex;align-items:center;gap:12px;background:none;border:none;cursor:pointer;color:var(--ink);padding:0">
+        <svg viewBox="0 0 100 100" width="34" height="34" style="flex:none">
+          <defs><linearGradient id="fxg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b8cff"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs>
+          <g style="transform-origin:50px 50px;animation:fx-spin 24s linear infinite"><circle cx="50" cy="50" r="46" fill="none" stroke="url(#fxg)" stroke-width="2" stroke-dasharray="2 7" stroke-linecap="round"/></g>
+          <g stroke="url(#fxg)" stroke-width="3" stroke-linecap="round" fill="none">
+            <line x1="50" y1="26" x2="50" y2="66"/><line x1="28" y1="38" x2="72" y2="38"/>
+            <line x1="28" y1="38" x2="28" y2="47"/><line x1="72" y1="38" x2="72" y2="47"/>
+            <path d="M21 47 a7 7 0 0 0 14 0"/><path d="M65 47 a7 7 0 0 0 14 0"/><line x1="42" y1="66" x2="58" y2="66"/>
+          </g>
+          <circle cx="50" cy="24" r="3.4" fill="url(#fxg)"/>
+        </svg>
+        <span style="font:600 20px 'Newsreader',serif;letter-spacing:.01em">Fix<span style="font-style:italic;color:var(--accent-b)">Fair</span></span>
+      </button>
+      <nav style="display:flex;align-items:center;gap:6px">
+        <button onClick="{{ goDocket }}" style="padding:9px 14px;border-radius:999px;border:none;background:none;cursor:pointer;font:500 14px 'Space Grotesk';color:var(--muted)" style-hover="color:var(--ink);background:var(--panel2)">The Docket</button>
+        <button onClick="{{ goCreate }}" style="padding:9px 14px;border-radius:999px;border:none;background:none;cursor:pointer;font:500 14px 'Space Grotesk';color:var(--muted)" style-hover="color:var(--ink);background:var(--panel2)">Open a case</button>
+        <button onClick="{{ toggleTheme }}" aria-label="Toggle theme" style="margin-left:6px;position:relative;width:62px;height:32px;border-radius:999px;border:1px solid var(--line2);background:var(--panel2);cursor:pointer;padding:0">
+          <span data-knob style="position:absolute;top:2px;left:2px;width:26px;height:26px;border-radius:50%;background:linear-gradient(120deg,#5b8cff,#7c5cff);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px -4px rgba(124,92,255,.8)">
+            <svg data-moon viewBox="0 0 24 24" width="14" height="14" style="position:absolute"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="#fff"/></svg>
+            <svg data-sun viewBox="0 0 24 24" width="15" height="15" style="position:absolute" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"><circle cx="12" cy="12" r="4" fill="#fff" stroke="none"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="5" y1="5" x2="6.5" y2="6.5"/><line x1="17.5" y1="17.5" x2="19" y2="19"/><line x1="19" y1="5" x2="17.5" y2="6.5"/><line x1="6.5" y1="17.5" x2="5" y2="19"/></svg>
+          </span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main style="position:relative;z-index:1">
+
+  <sc-if value="{{ isLanding }}" hint-placeholder-val="{{ true }}">
+  <div>
+    <!-- HERO -->
+    <section style="max-width:1200px;margin:0 auto;padding:clamp(48px,9vw,120px) 24px 64px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:48px;align-items:center">
+      <div>
+        <div data-hero-eyebrow style="display:inline-flex;align-items:center;gap:10px;padding:7px 14px;border-radius:999px;border:1px solid var(--line2);background:var(--panel);font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)">
+          <span style="width:7px;height:7px;border-radius:50%;background:var(--refund);box-shadow:0 0 10px var(--refund)"></span>Impartial AI adjudication
+        </div>
+        <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(42px,6.6vw,92px);line-height:1.02;letter-spacing:-.02em;margin:22px 0 0">
+          <span style="display:block;overflow:hidden"><span data-hero-line style="display:block">Every warranty</span></span>
+          <span style="display:block;overflow:hidden"><span data-hero-line style="display:block">deserves a</span></span>
+          <span style="display:block;overflow:hidden"><span data-hero-line style="display:block;font-style:italic;background:linear-gradient(120deg,var(--accent-a),var(--accent-b));-webkit-background-clip:text;background-clip:text;color:transparent">fair hearing.</span></span>
+        </h1>
+        <p data-hero-sub style="max-width:520px;margin:26px 0 0;font-size:clamp(16px,1.5vw,19px);line-height:1.6;color:var(--muted)">
+          FixFair holds the money in escrow and lets a neutral AI arbiter weigh each repair claim against the warranty's own words — then delivers a verdict you can read, question, and trust.
+        </p>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:34px">
+          <button data-hero-cta onClick="{{ runDemo }}" style="display:inline-flex;align-items:center;gap:10px;padding:15px 26px;border-radius:999px;border:none;cursor:pointer;font:600 15px 'Space Grotesk';color:#fff;background:linear-gradient(120deg,#5b8cff,#7c5cff);box-shadow:0 14px 34px -12px rgba(124,92,255,.7)" style-hover="transform:translateY(-2px);box-shadow:0 20px 44px -14px rgba(124,92,255,.85)">Witness a live verdict →</button>
+          <button data-hero-cta onClick="{{ goDocket }}" style="padding:15px 26px;border-radius:999px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);cursor:pointer;font:600 15px 'Space Grotesk'" style-hover="border-color:var(--accent-b)">Browse the docket</button>
+        </div>
+        <div style="display:flex;gap:30px;margin-top:44px;flex-wrap:wrap">
+          <div><div style="font-family:'Newsreader',serif;font-size:30px">2,481</div><div style="font:500 12px 'JetBrains Mono';letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">cases judged</div></div>
+          <div><div style="font-family:'Newsreader',serif;font-size:30px">$1.9M</div><div style="font:500 12px 'JetBrains Mono';letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">escrow settled</div></div>
+          <div><div style="font-family:'Newsreader',serif;font-size:30px">2.1s</div><div style="font:500 12px 'JetBrains Mono';letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">avg. deliberation</div></div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:center;align-items:center;min-height:340px">
+        <div data-emblem style="position:relative;width:min(420px,80vw);aspect-ratio:1;animation:fx-float 7s ease-in-out infinite">
+          <div style="position:absolute;inset:8%;border-radius:50%;background:radial-gradient(circle,var(--aura),transparent 68%);filter:blur(6px)"></div>
+          <svg viewBox="0 0 100 100" width="100%" height="100%" style="position:relative">
+            <g style="transform-origin:50px 50px;animation:fx-spin 40s linear infinite"><circle cx="50" cy="50" r="47" fill="none" stroke="url(#fxg)" stroke-width=".7" stroke-dasharray="1 5" stroke-linecap="round"/></g>
+            <g style="transform-origin:50px 50px;animation:fx-spinrev 60s linear infinite"><circle cx="50" cy="50" r="41" fill="none" stroke="var(--line2)" stroke-width=".5" stroke-dasharray="8 4"/></g>
+            <circle cx="50" cy="50" r="34" fill="none" stroke="var(--line)" stroke-width=".6"/>
+            <g stroke="url(#fxg)" stroke-width="1.7" stroke-linecap="round" fill="none">
+              <line x1="50" y1="24" x2="50" y2="68"/><line x1="26" y1="36" x2="74" y2="36"/>
+              <line x1="26" y1="36" x2="26" y2="47"/><line x1="74" y1="36" x2="74" y2="47"/>
+              <path d="M18 47 a8 8 0 0 0 16 0"/><path d="M66 47 a8 8 0 0 0 16 0"/><line x1="41" y1="68" x2="59" y2="68"/>
+            </g>
+            <circle cx="50" cy="22" r="2.6" fill="url(#fxg)"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- TICKER -->
+    <section data-ticker style="border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;background:var(--panel)">
+      <div style="display:flex;width:max-content;animation:fx-marq 34s linear infinite">
+        <div style="display:flex;gap:0">
+          <sc-for list="{{ tickerLoop }}" as="t" hint-placeholder-count="10">
+            <span style="display:inline-flex;align-items:center;gap:12px;padding:14px 26px;font:500 13px 'JetBrains Mono';letter-spacing:.05em;color:var(--muted);white-space:nowrap">
+              <span style="width:6px;height:6px;border-radius:50%;background:{{ t.color }}"></span>{{ t.label }}
+            </span>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section style="max-width:1200px;margin:0 auto;padding:clamp(70px,10vw,120px) 24px 40px">
+      <div data-reveal style="max-width:620px">
+        <div style="font:500 12px 'JetBrains Mono';letter-spacing:.16em;text-transform:uppercase;color:var(--accent-b)">Due process, in three acts</div>
+        <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(30px,4.4vw,52px);line-height:1.08;letter-spacing:-.02em;margin:14px 0 0">No screenshots to a support inbox. A record, a claim, a ruling.</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;margin-top:52px">
+        <div data-reveal style="background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:30px;position:relative;overflow:hidden">
+          <div style="font-family:'Newsreader',serif;font-style:italic;font-size:60px;line-height:1;color:var(--accent-b);opacity:.3">I</div>
+          <h3 style="font-family:'Newsreader',serif;font-weight:500;font-size:25px;margin:14px 0 8px">The record is written</h3>
+          <p style="color:var(--muted);line-height:1.6;margin:0">A seller opens an escrow case — the item, the parties, the money held, and the warranty spelled out in plain language. Those words become the law of the case.</p>
+        </div>
+        <div data-reveal style="background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:30px;position:relative;overflow:hidden">
+          <div style="font-family:'Newsreader',serif;font-style:italic;font-size:60px;line-height:1;color:var(--accent-b);opacity:.3">II</div>
+          <h3 style="font-family:'Newsreader',serif;font-weight:500;font-size:25px;margin:14px 0 8px">The claim is filed</h3>
+          <p style="color:var(--muted);line-height:1.6;margin:0">When something breaks, the buyer states what went wrong, attaches evidence, and cites the serial number. No pleading to a human. Just the facts, entered into the record.</p>
+        </div>
+        <div data-reveal style="background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:30px;position:relative;overflow:hidden">
+          <div style="font-family:'Newsreader',serif;font-style:italic;font-size:60px;line-height:1;color:var(--accent-b);opacity:.3">III</div>
+          <h3 style="font-family:'Newsreader',serif;font-weight:500;font-size:25px;margin:14px 0 8px">The verdict is sealed</h3>
+          <p style="color:var(--muted);line-height:1.6;margin:0">The arbiter weighs claim against covenant and rules — refund, partial, or reject — with a written reason and a confidence score. Escrow moves the instant it's decided.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SHOWCASE -->
+    <section style="max-width:1200px;margin:0 auto;padding:60px 24px clamp(80px,10vw,120px)">
+      <div data-reveal style="background:linear-gradient(150deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:26px;padding:clamp(30px,5vw,60px);display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:44px;align-items:center;position:relative;overflow:hidden">
+        <div>
+          <div style="font:500 12px 'JetBrains Mono';letter-spacing:.16em;text-transform:uppercase;color:var(--accent-b)">The verdict moment</div>
+          <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(28px,3.8vw,44px);line-height:1.1;letter-spacing:-.01em;margin:14px 0 16px">A ruling you can actually read.</h2>
+          <p style="color:var(--muted);line-height:1.65;max-width:460px;margin:0 0 26px">Every decision arrives with its reasoning laid bare and a confidence you can weigh. If it's wrong, you can see exactly where — because the reason is written, not hidden behind a policy code.</p>
+          <button onClick="{{ runDemo }}" style="display:inline-flex;align-items:center;gap:10px;padding:14px 24px;border-radius:999px;border:none;cursor:pointer;font:600 15px 'Space Grotesk';color:#fff;background:linear-gradient(120deg,#5b8cff,#7c5cff);box-shadow:0 14px 34px -12px rgba(124,92,255,.7)" style-hover="transform:translateY(-2px)">Run a sample case →</button>
+        </div>
+        <div style="background:var(--bg);border:1px solid var(--line2);border-radius:20px;padding:26px;position:relative;overflow:hidden">
+          <div style="position:absolute;top:-24px;right:-24px;width:120px;height:120px;border-radius:50%;background:var(--refund);opacity:.12;filter:blur(10px)"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font:500 12px 'JetBrains Mono';color:var(--muted)"><span>CASE FX-0455</span><span>96% confidence</span></div>
+          <div style="font-family:'Newsreader',serif;font-size:46px;font-weight:500;color:var(--refund);margin:16px 0 4px;letter-spacing:.02em">REFUND</div>
+          <p style="color:var(--ink);line-height:1.55;font-size:14.5px;margin:0 0 6px">Gimbal instability falls under covered flight-control components. Logs show calm-weather use, no impact events — no exclusion applies.</p>
+          <div style="border-top:1px solid var(--line);margin-top:16px;padding-top:14px;display:flex;justify-content:space-between;font:500 13px 'JetBrains Mono';color:var(--muted)"><span>Released to buyer</span><span style="color:var(--refund)">$640.00</span></div>
+        </div>
+      </div>
+    </section>
+
+    <footer style="border-top:1px solid var(--line);padding:34px 24px;text-align:center;color:var(--muted);font:500 13px 'JetBrains Mono';letter-spacing:.05em">FixFair · a neutral arbiter for warranty disputes · demo build, mock docket</footer>
+  </div>
+  </sc-if>
+
+  <!-- DOCKET -->
+  <sc-if value="{{ isDocket }}">
+  <section ref="{{ docketRef }}" style="max-width:1200px;margin:0 auto;padding:clamp(36px,6vw,72px) 24px 90px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px">
+      <div>
+        <div style="font:500 12px 'JetBrains Mono';letter-spacing:.16em;text-transform:uppercase;color:var(--accent-b)">The docket</div>
+        <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(34px,5vw,58px);letter-spacing:-.02em;margin:12px 0 0">Cases before the tribunal</h1>
+      </div>
+      <button onClick="{{ goCreate }}" style="padding:13px 22px;border-radius:999px;border:none;cursor:pointer;font:600 14px 'Space Grotesk';color:#fff;background:linear-gradient(120deg,#5b8cff,#7c5cff);box-shadow:0 12px 30px -12px rgba(124,92,255,.7)" style-hover="transform:translateY(-2px)">+ Open a case</button>
+    </div>
+    <div style="display:flex;gap:8px;margin:30px 0 26px;flex-wrap:wrap">
+      <sc-for list="{{ filterTabs }}" as="tab" hint-placeholder-count="3">
+        <button onClick="{{ tab.onClick }}" style="padding:9px 18px;border-radius:999px;cursor:pointer;font:600 13px 'Space Grotesk';border:1px solid {{ tab.border }};background:{{ tab.bg }};color:{{ tab.fg }}">{{ tab.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px">
+      <sc-for list="{{ filteredCases }}" as="c" hint-placeholder-count="6">
+        <button data-card onClick="{{ c.onOpen }}" style="text-align:left;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:14px" style-hover="border-color:var(--accent-b);transform:translateY(-3px)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font:500 12px 'JetBrains Mono';letter-spacing:.08em;color:var(--muted)">{{ c.id }}</span>
+            <span style="display:inline-flex;align-items:center;gap:7px;padding:5px 11px;border-radius:999px;font:500 11px 'JetBrains Mono';letter-spacing:.06em;background:{{ c.statusBg }};color:{{ c.statusFg }}"><span style="width:6px;height:6px;border-radius:50%;background:{{ c.statusFg }}"></span>{{ c.statusLabel }}</span>
+          </div>
+          <div style="font-family:'Newsreader',serif;font-weight:500;font-size:22px;line-height:1.2">{{ c.item }}</div>
+          <div style="font-size:13px;color:var(--muted)">{{ c.category }} · {{ c.seller }} → {{ c.buyer }}</div>
+          <div style="margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--line);padding-top:14px">
+            <div><div style="font:500 11px 'JetBrains Mono';letter-spacing:.08em;color:var(--muted)">ESCROW</div><div style="font-family:'Newsreader',serif;font-size:24px">{{ c.escrowLabel }}</div></div>
+            <sc-if value="{{ c.verdict }}" hint-placeholder-val="{{ true }}"><span style="font:600 13px 'JetBrains Mono';letter-spacing:.06em;color:{{ c.verdictColor }}">{{ c.verdictLabel }}</span></sc-if>
+          </div>
+        </button>
+      </sc-for>
+    </div>
+  </section>
+  </sc-if>
+
+  <!-- DETAIL -->
+  <sc-if value="{{ isDetail }}">
+  <section ref="{{ detailRef }}" style="max-width:1120px;margin:0 auto;padding:clamp(28px,5vw,56px) 24px 90px">
+    <button onClick="{{ goDocket }}" style="background:none;border:none;cursor:pointer;color:var(--muted);font:500 13px 'JetBrains Mono';padding:0;margin-bottom:24px" style-hover="color:var(--ink)">← back to docket</button>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px">
+      <div>
+        <span style="font:500 12px 'JetBrains Mono';letter-spacing:.08em;color:var(--muted)">{{ detailCase.id }} · {{ detailCase.category }}</span>
+        <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(30px,4.4vw,48px);letter-spacing:-.02em;margin:8px 0 0;max-width:640px;line-height:1.08">{{ detailCase.item }}</h1>
+        <div style="color:var(--muted);margin-top:10px;font-size:14px">{{ detailCase.seller }} → {{ detailCase.buyer }} · opened {{ detailCase.created }}</div>
+      </div>
+      <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 15px;border-radius:999px;font:500 12px 'JetBrains Mono';letter-spacing:.06em;background:{{ detailCase.statusBg }};color:{{ detailCase.statusFg }}"><span style="width:7px;height:7px;border-radius:50%;background:{{ detailCase.statusFg }}"></span>{{ detailCase.statusLabel }}</span>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;margin-top:34px">
+      <!-- THE LAW -->
+      <div data-reveal style="background:var(--doc);border:1px solid var(--doc-edge);border-radius:20px;padding:32px;position:relative;overflow:hidden">
+        <div aria-hidden="true" style="position:absolute;top:-30px;right:-30px;width:150px;height:150px;opacity:.06">
+          <svg viewBox="0 0 100 100" width="100%" height="100%" fill="none" stroke="var(--accent-b)" stroke-width="2"><circle cx="50" cy="50" r="46"/><line x1="50" y1="24" x2="50" y2="66"/><line x1="26" y1="36" x2="74" y2="36"/></svg>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font:500 12px 'JetBrains Mono';letter-spacing:.16em;text-transform:uppercase;color:var(--accent-b)">⎯ The warranty · the law of this case</div>
+        <div style="margin-top:24px;display:flex;flex-direction:column;gap:22px">
+          <sc-for list="{{ detailCase.articles }}" as="art" hint-placeholder-count="4">
+            <div style="display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start">
+              <div style="font-family:'Newsreader',serif;font-style:italic;font-size:15px;color:var(--accent-b);padding-top:3px;min-width:58px;letter-spacing:.05em">Art. {{ art.roman }}</div>
+              <div style="font-family:'Newsreader',serif;font-size:18px;line-height:1.5;color:var(--doc-ink);border-left:1px solid var(--doc-edge);padding-left:18px">{{ art.text }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- FACTS / ACTION -->
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <div data-reveal style="background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:28px">
+          <div style="font:500 12px 'JetBrains Mono';letter-spacing:.14em;text-transform:uppercase;color:var(--muted)">Case facts</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px">
+            <div><div style="font:500 11px 'JetBrains Mono';color:var(--muted)">ESCROW HELD</div><div style="font-family:'Newsreader',serif;font-size:26px">{{ detailCase.escrowLabel }}</div></div>
+            <div><div style="font:500 11px 'JetBrains Mono';color:var(--muted)">SERIAL</div><div style="font:500 15px 'JetBrains Mono';margin-top:4px">{{ detailCase.serial }}</div></div>
+            <div><div style="font:500 11px 'JetBrains Mono';color:var(--muted)">SELLER</div><div style="font-size:15px;margin-top:4px">{{ detailCase.seller }}</div></div>
+            <div><div style="font:500 11px 'JetBrains Mono';color:var(--muted)">BUYER</div><div style="font-size:15px;margin-top:4px">{{ detailCase.buyer }}</div></div>
+          </div>
+        </div>
+
+        <sc-if value="{{ detailCase.isOpen }}" hint-placeholder-val="{{ true }}">
+        <div data-reveal style="background:linear-gradient(150deg,var(--panel),var(--panel2));border:1px solid var(--line2);border-radius:20px;padding:28px">
+          <h3 style="font-family:'Newsreader',serif;font-weight:500;font-size:24px;margin:0 0 8px">Something broke?</h3>
+          <p style="color:var(--muted);line-height:1.6;margin:0 0 20px">File a claim and the arbiter will weigh it against the warranty above.</p>
+          <button onClick="{{ goClaim }}" style="width:100%;padding:15px;border-radius:14px;border:none;cursor:pointer;font:600 15px 'Space Grotesk';color:#fff;background:linear-gradient(120deg,#5b8cff,#7c5cff);box-shadow:0 12px 30px -12px rgba(124,92,255,.7)" style-hover="transform:translateY(-2px)">File a claim →</button>
+        </div>
+        </sc-if>
+
+        <sc-if value="{{ detailCase.verdict }}">
+        <div data-reveal style="background:var(--panel);border:1px solid {{ detailCase.verdictColor }};border-radius:20px;padding:28px;position:relative;overflow:hidden">
+          <div style="position:absolute;top:-30px;right:-30px;width:110px;height:110px;border-radius:50%;background:{{ detailCase.verdictColor }};opacity:.14;filter:blur(8px)"></div>
+          <div style="font:500 12px 'JetBrains Mono';letter-spacing:.14em;text-transform:uppercase;color:var(--muted)">Verdict rendered</div>
+          <div style="display:flex;align-items:baseline;gap:14px;margin:12px 0 6px"><span style="font-family:'Newsreader',serif;font-size:40px;font-weight:500;color:{{ detailCase.verdictColor }};letter-spacing:.02em">{{ detailCase.verdictLabel }}</span><span style="font:500 13px 'JetBrains Mono';color:var(--muted)">{{ detailCase.verdictConf }}% confidence</span></div>
+          <p style="color:var(--ink);line-height:1.6;margin:0 0 16px">{{ detailCase.verdictReason }}</p>
+          <div style="border-top:1px solid var(--line);padding-top:14px;display:flex;justify-content:space-between;font:500 13px 'JetBrains Mono';color:var(--muted)"><span>Settlement</span><span style="color:{{ detailCase.verdictColor }}">{{ detailCase.verdictAmount }}</span></div>
+          <button onClick="{{ replayVerdict }}" style="margin-top:18px;background:none;border:1px solid var(--line2);border-radius:10px;padding:9px 16px;cursor:pointer;font:500 13px 'Space Grotesk';color:var(--muted)" style-hover="color:var(--ink);border-color:var(--accent-b)">↺ Replay the ruling</button>
+        </div>
+        </sc-if>
+      </div>
+    </div>
+  </section>
+  </sc-if>
+
+  <!-- CREATE -->
+  <sc-if value="{{ isCreate }}">
+  <section ref="{{ createRef }}" style="max-width:1120px;margin:0 auto;padding:clamp(28px,5vw,56px) 24px 90px">
+    <button onClick="{{ goDocket }}" style="background:none;border:none;cursor:pointer;color:var(--muted);font:500 13px 'JetBrains Mono';padding:0;margin-bottom:20px" style-hover="color:var(--ink)">← back to docket</button>
+    <div style="font:500 12px 'JetBrains Mono';letter-spacing:.16em;text-transform:uppercase;color:var(--accent-b)">Open an escrow case</div>
+    <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(30px,4.4vw,50px);letter-spacing:-.02em;margin:10px 0 34px">Draft the record</h1>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <div><label style="font:500 12px 'JetBrains Mono';letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px">Item</label><input value="{{ cf.item }}" onInput="{{ onItem }}" placeholder="e.g. Keychron Q1 Pro — Wireless Mechanical" style="width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--ink);padding:13px 15px;font:400 15px 'Space Grotesk';outline:none" style-focus="border-color:var(--accent-b);box-shadow:0 0 0 3px rgba(124,92,255,.18)"/></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div><label style="font:500 12px 'JetBrains Mono';letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px">Category</label><select value="{{ cf.category }}" onChange="{{ onCat }}" style="width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--ink);padding:13px 15px;font:400 15px 'Space Grotesk';outline:none">
+            <option>Keyboards</option><option>Drones</option><option>Retro</option><option>Handhelds</option><option>Audio</option><option>Other</option>
+          </select></div>
+          <div><label style="font:500 12px 'JetBrains Mono';letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px">Escrow (USD)</label><input value="{{ cf.escrow }}" onInput="{{ onEscrow }}" placeholder="189" inputmode="numeric" style="width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--ink);padding:13px 15px;font:400 15px 'Space Grotesk';outline:none" style-focus="border-color:var(--accent-b);box-shadow:0 0 0 3px rgba(124,92,255,.18)"/></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div><label style="font:500 12px 'JetBrains Mono';letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px">Seller</label><input value="{{ cf.seller }}" onInput="{{ onSeller }}" placeholder="Northwind Keys" style="width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--ink);padding:13px 15px;font:400 15px 'Space Grotesk';outline:none" style-focus="border-color:var(--accent-b);box-shadow:0 0 0 3px rgba(124,92,255,.18)"/></div>
+          <div><label style="font:500 12px 'JetBrains Mono';letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px">Buyer</label><input value="{{ cf.buyer }}" onInput="{{ onBuyer }}" placeholder="d.mccoy" style="width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--ink);padding:13px 15px;font:400 15px 'Space Grotesk';outline:none" style-focus="border-color:var(--accent-b);box-shadow:0 0 0 3px rgba(124,92,255,.18)"/></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <label style="font:500 12px 'JetBrains Mono';letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Warranty terms · plain language</label>
+            <button onClick="{{ addClause }}" style="background:none;border:1px solid var(--line2);border-radius:8px;padding:5px 11px;cursor:pointer;font:500 12px 'Space Grotesk';color:var(--accent-b)" style-hover="border-color:var(--accent-b)">+ Article</button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ clauseRows }}" as="row" hint-placeholder-count="2">
+              <div style="display:flex;gap:10px;align-items:start">
+                <span style="font-family:'Newsreader',serif;font-style:italic;color:var(--accent-b);padding-top:12px;min-width:26px;text-align:right">{{ row.roman }}</span>
+                <textarea value="{{ row.val }}" onInput="{{ row.onChange }}" rows="2" placeholder="Write a clause the way a human would say it…" style="flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--ink);padding:11px 14px;font:400 14px 'Space Grotesk';outline:none;resize:vertical;line-height:1.5" style-focus="border-color:var(--accent-b);box-shadow:0 0 0 3px rgba(124,92,255,.18)"></textarea>
+                <button onClick="{{ row.onRemove }}" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:20px;padding:8px 4px;line-height:1" style-hover="color:var(--reject)">×</button>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <button onClick="{{ submitCreate }}" style="margin-top:6px;padding:16px;border-radius:14px;border:none;cursor:pointer;font:600 15px 'Space Grotesk';color:#fff;background:linear-gradient(120deg,#5b8cff,#7c5cff);box-shadow:0 14px 34px -12px rgba(124,92,255,.7)" style-hover="transform:translateY(-2px)">Fund escrow & open case →</button>
+      </div>
+
+      <!-- LIVE DOCUMENT PREVIEW -->
+      <div style="position:sticky;top:92px">
+        <div style="background:var(--doc);border:1px solid var(--doc-edge);border-radius:20px;padding:34px;position:relative;overflow:hidden;min-height:400px">
+          <div aria-hidden="true" style="position:absolute;bottom:-40px;left:-40px;width:180px;height:180px;opacity:.05">
+            <svg viewBox="0 0 100 100" width="100%" height="100%" fill="none" stroke="var(--accent-b)" stroke-width="2"><circle cx="50" cy="50" r="46"/><line x1="50" y1="24" x2="50" y2="66"/><line x1="26" y1="36" x2="74" y2="36"/></svg>
+          </div>
+          <div style="text-align:center;border-bottom:1px solid var(--doc-edge);padding-bottom:18px">
+            <div style="font:500 11px 'JetBrains Mono';letter-spacing:.24em;color:var(--accent-b)">CERTIFICATE OF WARRANTY</div>
+            <div style="font-family:'Newsreader',serif;font-size:26px;margin-top:8px;color:var(--doc-ink)">{{ previewItem }}</div>
+            <div style="font:500 12px 'JetBrains Mono';color:var(--muted);margin-top:6px">{{ previewMeta }}</div>
+          </div>
+          <div style="margin-top:22px;display:flex;flex-direction:column;gap:18px">
+            <sc-for list="{{ previewClauses }}" as="pc" hint-placeholder-count="2">
+              <div style="display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start">
+                <div style="font-family:'Newsreader',serif;font-style:italic;font-size:14px;color:var(--accent-b);min-width:50px;padding-top:2px">Art. {{ pc.roman }}</div>
+                <div style="font-family:'Newsreader',serif;font-size:16px;line-height:1.5;color:{{ pc.color }}">{{ pc.text }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  </sc-if>
+
+  <!-- CLAIM -->
+  <sc-if value="{{ isClaim }}">
+  <section ref="{{ claimRef }}" style="max-width:720px;margin:0 auto;padding:clamp(28px,5vw,56px) 24px 90px">
+    <button onClick="{{ backToDetail }}" style="background:none;border:none;cursor:pointer;color:var(--muted);font:500 13px 'JetBrains Mono';padding:0;margin-bottom:20px" style-hover="color:var(--ink)">← back to case</button>
+    <div style="font:500 12px 'JetBrains Mono';letter-spacing:.16em;text-transform:uppercase;color:var(--accent-b)">File a claim · {{ detailCase.id }}</div>
+    <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(30px,4.4vw,48px);letter-spacing:-.02em;margin:10px 0 6px">State your grievance</h1>
+    <p style="color:var(--muted);margin:0 0 30px">Regarding <span style="color:var(--ink)">{{ detailCase.item }}</span> — escrow {{ detailCase.escrowLabel }}.</p>
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div><label style="font:500 12px 'JetBrains Mono';letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px">What went wrong?</label><textarea value="{{ claim.issue }}" onInput="{{ onIssue }}" rows="5" placeholder="Describe the fault plainly. The arbiter reads exactly what you write." style="width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--ink);padding:13px 15px;font:400 15px 'Space Grotesk';outline:none;resize:vertical;line-height:1.55" style-focus="border-color:var(--accent-b);box-shadow:0 0 0 3px rgba(124,92,255,.18)"></textarea></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div><label style="font:500 12px 'JetBrains Mono';letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px">Evidence URL (optional)</label><input value="{{ claim.evidence }}" onInput="{{ onEvidence }}" placeholder="https://…" style="width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--ink);padding:13px 15px;font:400 15px 'Space Grotesk';outline:none" style-focus="border-color:var(--accent-b);box-shadow:0 0 0 3px rgba(124,92,255,.18)"/></div>
+        <div><label style="font:500 12px 'JetBrains Mono';letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px">Serial number</label><input value="{{ claim.serial }}" onInput="{{ onSerial }}" placeholder="{{ detailCase.serial }}" style="width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--ink);padding:13px 15px;font:400 15px 'JetBrains Mono';outline:none" style-focus="border-color:var(--accent-b);box-shadow:0 0 0 3px rgba(124,92,255,.18)"/></div>
+      </div>
+      <div style="background:var(--panel);border:1px dashed var(--line2);border-radius:14px;padding:16px;font-size:13px;color:var(--muted);line-height:1.5">The arbiter will read your claim against the {{ detailCase.articleCount }} articles of this warranty. Try phrases like <em>"hot-swap sockets stopped working"</em> (covered) or <em>"dropped it in water"</em> (excluded) to see the ruling change.</div>
+      <button onClick="{{ submitClaim }}" style="padding:17px;border-radius:14px;border:none;cursor:pointer;font:600 16px 'Space Grotesk';color:#fff;background:linear-gradient(120deg,#5b8cff,#7c5cff);box-shadow:0 16px 38px -12px rgba(124,92,255,.75)" style-hover="transform:translateY(-2px)">⚖ Summon the arbiter</button>
+    </div>
+  </section>
+  </sc-if>
+
+  <!-- ADJUDICATING -->
+  <sc-if value="{{ isAdjudicating }}">
+  <section ref="{{ adjRef }}" style="min-height:calc(100vh - 68px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;position:relative;overflow:hidden">
+    <div data-adj-emblem style="position:relative;width:min(260px,60vw);aspect-ratio:1;margin-bottom:36px">
+      <div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,var(--aura),transparent 66%);animation:fx-pulse 2.4s ease-in-out infinite"></div>
+      <svg viewBox="0 0 100 100" width="100%" height="100%" style="position:relative">
+        <g style="transform-origin:50px 50px;animation:fx-spin 8s linear infinite"><circle cx="50" cy="50" r="47" fill="none" stroke="url(#fxg)" stroke-width=".8" stroke-dasharray="3 6" stroke-linecap="round"/></g>
+        <circle cx="50" cy="50" r="38" fill="none" stroke="var(--line)" stroke-width=".6"/>
+        <g data-adj-beam stroke="url(#fxg)" stroke-width="2" stroke-linecap="round" fill="none" style="transform-origin:50px 34px">
+          <line x1="26" y1="34" x2="74" y2="34"/><line x1="26" y1="34" x2="26" y2="45"/><line x1="74" y1="34" x2="74" y2="45"/>
+          <path d="M18 45 a8 8 0 0 0 16 0"/><path d="M66 45 a8 8 0 0 0 16 0"/>
+        </g>
+        <g stroke="url(#fxg)" stroke-width="2" stroke-linecap="round"><line x1="50" y1="22" x2="50" y2="68"/><line x1="41" y1="68" x2="59" y2="68"/></g>
+        <circle cx="50" cy="20" r="3" fill="url(#fxg)"/>
+      </svg>
+    </div>
+    <div style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(26px,4vw,40px);letter-spacing:-.01em">The tribunal is deliberating<span style="animation:fx-dot 1.4s infinite">.</span><span style="animation:fx-dot 1.4s infinite .2s">.</span><span style="animation:fx-dot 1.4s infinite .4s">.</span></div>
+    <div style="width:100%;max-width:520px;margin-top:30px;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;position:relative;overflow:hidden">
+      <div data-scan style="position:absolute;left:0;right:0;height:60px;background:linear-gradient(180deg,transparent,var(--aura),transparent);pointer-events:none"></div>
+      <div style="display:flex;flex-direction:column;gap:13px;font:400 13.5px 'JetBrains Mono';color:var(--muted);position:relative">
+        <sc-for list="{{ reasoningLines }}" as="ln" hint-placeholder-count="6"><div data-line style="display:flex;gap:10px"><span style="color:var(--accent-b)">›</span><span>{{ ln }}</span></div></sc-for>
+      </div>
+    </div>
+  </section>
+  </sc-if>
+
+  <!-- VERDICT -->
+  <sc-if value="{{ isVerdict }}">
+  <section ref="{{ verdictRef }}" style="min-height:calc(100vh - 68px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;text-align:center;position:relative;overflow:hidden">
+    <div data-verdict-flash style="position:absolute;inset:0;background:{{ vv.color }};opacity:0;pointer-events:none;z-index:5"></div>
+    <div data-verdict-glow aria-hidden="true" style="position:absolute;width:min(560px,90vw);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,{{ vv.glow }},transparent 62%);filter:blur(20px);pointer-events:none"></div>
+
+    <div style="position:relative;z-index:6;display:flex;flex-direction:column;align-items:center">
+      <div style="font:500 12px 'JetBrains Mono';letter-spacing:.2em;text-transform:uppercase;color:var(--muted)" data-v-el>Case {{ vv.caseRef }} · verdict rendered</div>
+
+      <div data-verdict-seal style="position:relative;width:200px;height:200px;margin:22px 0 4px">
+        <svg viewBox="0 0 160 160" width="200" height="200">
+          <circle cx="80" cy="80" r="54" fill="none" stroke="var(--line2)" stroke-width="8"/>
+          <circle data-conf-ring cx="80" cy="80" r="54" fill="none" stroke="{{ vv.color }}" stroke-width="8" stroke-linecap="round" stroke-dasharray="339.292 339.292" stroke-dashoffset="339.292" transform="rotate(-90 80 80)"/>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <div style="display:flex;align-items:baseline"><span data-conf-num style="font-family:'Newsreader',serif;font-size:52px;font-weight:500;color:{{ vv.color }}">0</span><span style="font-family:'Newsreader',serif;font-size:24px;color:{{ vv.color }}">%</span></div>
+          <div style="font:500 10px 'JetBrains Mono';letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:2px">confidence</div>
+        </div>
+      </div>
+
+      <div style="overflow:hidden;padding:4px 0"><div data-verdict-word style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(56px,13vw,140px);line-height:1;letter-spacing:.02em;color:{{ vv.color }}">{{ vv.label }}</div></div>
+      <div data-v-el style="font-size:15px;color:var(--muted);margin-top:6px">{{ vv.sub }}</div>
+
+      <p data-v-el style="max-width:600px;margin:26px 0 0;font-family:'Newsreader',serif;font-size:clamp(18px,2.2vw,23px);line-height:1.55;color:var(--ink)">{{ vv.reason }}</p>
+
+      <div data-v-el style="display:flex;align-items:center;gap:24px;margin-top:28px;padding:16px 26px;border:1px solid var(--line);border-radius:16px;background:var(--panel)">
+        <div style="text-align:left"><div style="font:500 11px 'JetBrains Mono';color:var(--muted)">SETTLEMENT</div><div style="font-family:'Newsreader',serif;font-size:28px;color:{{ vv.color }}">{{ vv.amountLabel }}</div></div>
+        <div style="width:1px;height:36px;background:var(--line)"></div>
+        <div style="text-align:left"><div style="font:500 11px 'JetBrains Mono';color:var(--muted)">ITEM</div><div style="font-size:14px;max-width:220px">{{ vv.item }}</div></div>
+      </div>
+
+      <div data-v-el style="display:flex;gap:12px;margin-top:30px;flex-wrap:wrap;justify-content:center">
+        <button onClick="{{ verdictToCase }}" style="padding:13px 24px;border-radius:999px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);cursor:pointer;font:600 14px 'Space Grotesk'" style-hover="border-color:var(--accent-b)">View the case file</button>
+        <button onClick="{{ goDocket }}" style="padding:13px 24px;border-radius:999px;border:none;cursor:pointer;font:600 14px 'Space Grotesk';color:#fff;background:linear-gradient(120deg,#5b8cff,#7c5cff);box-shadow:0 12px 30px -12px rgba(124,92,255,.7)" style-hover="transform:translateY(-2px)">Return to the docket</button>
+      </div>
+    </div>
+  </section>
+  </sc-if>
+
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this._refCache={}; this.refs2={}; this._loops=[]; this._stReg=false;
+    this.state={
+      theme:'dark', screen:'landing', docketFilter:'open', selectedId:null,
+      cf:{item:'',category:'Keyboards',seller:'',buyer:'',escrow:'',terms:['']},
+      claim:{issue:'',evidence:'',serial:''},
+      verdict:null, pendingVerdict:null, replayFrom:null,
+      cases:this.mockCases(),
+    };
+  }
+
+  mockCases(){
+    return [
+      {id:'FX-0481',item:'Keychron Q1 Pro — Wireless Mechanical',category:'Keyboards',seller:'Northwind Keys',buyer:'d.mccoy',escrow:189,currency:'$',status:'open',serial:'KQ1P-77A213',created:'Jul 14, 2026',
+        terms:['The mechanical switches, hot-swap sockets, and PCB are guaranteed against failure for 12 months from delivery.','Battery must retain at least 70% of rated capacity through the first year.','Coverage excludes liquid ingress, physical drops, and any modification to firmware or plate.','Buyer must provide the serial number and a description of the fault.']},
+      {id:'FX-0498',item:'GMK Olivia TKL — Custom Build',category:'Keyboards',seller:'Northwind Keys',buyer:'clackr',escrow:310,currency:'$',status:'open',serial:'NWK-TKL-3391',created:'Jul 19, 2026',
+        terms:['Assembly, stabilizers, and soldering workmanship are covered for 12 months.','Keycap wear and personal preference on typing feel are not grounds for a claim.','Coverage excludes damage from disassembly by the buyer.']},
+      {id:'FX-0502',item:'AirNode Pro — Wireless Earbuds',category:'Audio',seller:'SoundDrop',buyer:'r.okafor',escrow:130,currency:'$',status:'open',serial:'AN-PRO-55120',created:'Jul 21, 2026',
+        terms:['Drivers, charging case, and battery are covered for 12 months.','Single-side audio failure is covered; loss of an earbud is not.','Water resistance is rated IPX4 — submersion is excluded.']},
+      {id:'FX-0455',item:'Skyward S2 — Foldable Camera Drone',category:'Drones',seller:'AeroBazaar',buyer:'kite_flyer',escrow:640,currency:'$',status:'resolved',serial:'SW2-4471-KD',created:'Jun 30, 2026',
+        terms:['Motors, gimbal, and flight controller are covered for 12 months.','Coverage is void if flight logs show operation in rain or winds above 35 km/h.','One free calibration is included within 90 days.'],
+        claim:{issue:'Gimbal drifts and cannot hold horizon after 3 flights. No crashes, calm weather only.',evidence:'https://drive.example/clip-8842',serial:'SW2-4471-KD'},
+        verdict:{decision:'refund',confidence:96,reason:'The gimbal instability falls squarely under the covered flight-control components. Logs show calm-weather operation with no impact events, so no exclusion applies. Full escrow is released to the buyer.',amount:640}},
+      {id:'FX-0410',item:'PixelPocket — Retro Handheld',category:'Handhelds',seller:'PixelVault',buyer:'sunny.dev',escrow:220,currency:'$',status:'resolved',serial:'PP-2026-1187',created:'Jun 10, 2026',
+        terms:['Display, buttons, and battery are covered for 12 months.','Up to 2 stuck or dead pixels are considered within manufacturing tolerance.','Cosmetic wear is not covered.'],
+        claim:{issue:'Four dead pixels appeared in the top corner of the screen after two weeks.',evidence:'https://imgur.example/pp-screen',serial:'PP-2026-1187'},
+        verdict:{decision:'partial',confidence:78,reason:'Two dead pixels fall within stated tolerance; the additional two exceed it. A partial remedy is warranted, releasing half of escrow toward a screen repair.',amount:110}},
+      {id:'FX-0432',item:'Super Famicom — Refurbished Console',category:'Retro',seller:'PixelVault',buyer:'m_tanaka',escrow:95,currency:'$',status:'resolved',serial:'SFC-REF-0092',created:'Jun 22, 2026',
+        terms:['The refurbished mainboard and power regulator are covered for 6 months.','Damage from third-party power supplies or voltage surges is excluded.','Cartridge slot cleaned and tested prior to shipping.'],
+        claim:{issue:'Console died after a power surge during a storm. Was using my own wall adapter.',evidence:'',serial:'SFC-REF-0092'},
+        verdict:{decision:'reject',confidence:91,reason:'The failure is attributed to an external voltage surge, which the warranty explicitly excludes. The buyer confirmed a non-original adapter was in use. Escrow is returned to the seller.',amount:0}},
+    ];
+  }
+
+  // ---- data layer helpers (swap point for real API) ----
+  adjudicate(c, claim){
+    const t=((claim&&claim.issue)||'').toLowerCase();
+    const excl=/liquid|water|spill|spilled|submerg|drop|dropped|crack|cracked|physical|abuse|surge|storm|fire|disassembl|modif/;
+    const partialR=/dead pixel|pixel|intermittent|sometimes|occasion|scratch|cosmetic|slight|minor|partial|one side|single side/;
+    const seed=(c.id||'').split('').reduce((a,ch)=>a+ch.charCodeAt(0),0);
+    let decision,confidence,reason,amount;
+    if(excl.test(t)){ decision='reject'; confidence=84+(seed%12); amount=0;
+      reason='The described cause matches an exclusion written into the warranty. With an excluded cause present, coverage does not attach and escrow is returned to the seller.'; }
+    else if(partialR.test(t)){ decision='partial'; confidence=70+(seed%16); amount=Math.round(c.escrow*0.5);
+      reason='The fault is partly within tolerance and partly beyond it. A split remedy is the fair reading — half of escrow is released to the buyer toward a repair.'; }
+    else { decision='refund'; confidence=90+(seed%9); amount=c.escrow;
+      reason='The fault maps directly to a covered component within the warranty window, and no exclusion is asserted. The claim is upheld and full escrow is released to the buyer.'; }
+    return {decision,confidence,reason,amount};
+  }
+
+  roman(n){return ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'][n-1]||(''+n);}
+  meta(d){
+    if(d==='refund')return{label:'REFUND',color:'var(--refund)',glow:'rgba(52,211,153,.4)',sub:'Claim upheld — escrow released to the buyer'};
+    if(d==='partial')return{label:'PARTIAL',color:'var(--partial)',glow:'rgba(251,191,36,.4)',sub:'Split remedy — escrow divided between the parties'};
+    return{label:'REJECT',color:'var(--reject)',glow:'rgba(248,113,113,.4)',sub:'Claim denied — escrow returned to the seller'};
+  }
+  fmt(c,n){return (c&&c.currency||'$')+Number(n).toLocaleString();}
+  getRef(k){if(!this._refCache[k])this._refCache[k]=(el)=>{this.refs2[k]=el;};return this._refCache[k];}
+
+  // ---- navigation ----
+  toggleTheme=()=>this.setState(s=>({theme:s.theme==='dark'?'light':'dark'}));
+  goHome=()=>this.nav('landing');
+  goDocket=()=>this.nav('docket');
+  goCreate=()=>this.nav('create');
+  goClaim=()=>{this.setState({claim:{issue:'',evidence:'',serial:''}}); this.nav('claim');};
+  backToDetail=()=>this.nav('detail');
+  openCase=(id)=>this.setState({selectedId:id},()=>this.nav('detail'));
+  nav(screen){ window.scrollTo(0,0); this.setState({screen}); this.afterRender(()=>this.onScreenEnter(screen)); }
+
+  // ---- create form ----
+  onItem=(e)=>this.setCf('item',e.target.value);
+  onCat=(e)=>this.setCf('category',e.target.value);
+  onEscrow=(e)=>this.setCf('escrow',e.target.value.replace(/[^0-9]/g,''));
+  onSeller=(e)=>this.setCf('seller',e.target.value);
+  onBuyer=(e)=>this.setCf('buyer',e.target.value);
+  setCf(k,v){this.setState(s=>({cf:{...s.cf,[k]:v}}));}
+  addClause=()=>this.setState(s=>({cf:{...s.cf,terms:[...s.cf.terms,'']}}));
+  updateClause(i,v){this.setState(s=>{const t=[...s.cf.terms];t[i]=v;return{cf:{...s.cf,terms:t}};});}
+  removeClause(i){this.setState(s=>{const t=s.cf.terms.filter((_,j)=>j!==i);return{cf:{...s.cf,terms:t.length?t:['']}};});}
+  submitCreate=()=>{
+    const cf=this.state.cf; if(!cf.item.trim())return;
+    const id='FX-'+String(510+this.state.cases.length*7%400).padStart(4,'0');
+    const nc={id,item:cf.item.trim(),category:cf.category,seller:cf.seller.trim()||'Seller',buyer:cf.buyer.trim()||'Buyer',
+      escrow:Number(cf.escrow)||0,currency:'$',status:'open',serial:'NEW-'+Math.floor(1000+Math.random()*8999),
+      created:'Jul 23, 2026',terms:cf.terms.map(t=>t.trim()).filter(Boolean)};
+    if(!nc.terms.length)nc.terms=['Covered against failure for 12 months from delivery.'];
+    this.setState(s=>({cases:[nc,...s.cases],selectedId:id,cf:{item:'',category:'Keyboards',seller:'',buyer:'',escrow:'',terms:['']}}),()=>this.nav('detail'));
+  };
+
+  // ---- claim ----
+  onIssue=(e)=>this.setClaim('issue',e.target.value);
+  onEvidence=(e)=>this.setClaim('evidence',e.target.value);
+  onSerial=(e)=>this.setClaim('serial',e.target.value);
+  setClaim(k,v){this.setState(s=>({claim:{...s.claim,[k]:v}}));}
+  submitClaim=()=>{ const c=this.selected(); if(!c)return; this.startAdjudication(c,{...this.state.claim}); };
+
+  runDemo=()=>{
+    const c=this.state.cases.find(x=>x.id==='FX-0481')||this.state.cases[0];
+    const claim={issue:'Two hot-swap sockets stopped registering keypresses within the first month. No liquid, no drops.',evidence:'https://youtu.be/example',serial:c.serial};
+    const scripted={decision:'refund',confidence:96,reason:'The hot-swap socket failure is a covered PCB fault well within the 12-month window. No excluded cause — liquid, drops, or firmware modification — is present. Full escrow is released to the buyer.',amount:c.escrow};
+    this.setState({selectedId:c.id}); this.startAdjudication(c,claim,scripted);
+  };
+
+  replayVerdict=()=>{ const c=this.selected(); if(!c||!c.verdict)return; this.startAdjudication(c,c.claim||{},c.verdict); };
+
+  startAdjudication(c,claim,scripted){
+    const base=scripted?{...scripted}:this.adjudicate(c,claim);
+    const verdict={...base,caseRef:c.id,item:c.item,currency:c.currency};
+    window.scrollTo(0,0);
+    this.setState({screen:'adjudicating',selectedId:c.id,pendingVerdict:verdict});
+    this.afterRender(()=>this.onScreenEnter('adjudicating'));
+    clearTimeout(this._advT);
+    this._advT=setTimeout(()=>{
+      this.setState(s=>({screen:'verdict',verdict:s.pendingVerdict,
+        cases:s.cases.map(x=>x.id===c.id?{...x,status:'resolved',claim,verdict:base}:x)}));
+      this.afterRender(()=>this.onScreenEnter('verdict'));
+    },4200);
+  }
+
+  selected(){return this.state.cases.find(x=>x.id===this.state.selectedId);}
+  verdictToCase=()=>this.nav('detail');
+
+  // ---- lifecycle / animation ----
+  componentDidMount(){this.onScreenEnter('landing');}
+  afterRender(fn){ requestAnimationFrame(()=>requestAnimationFrame(fn)); }
+  waitGsap(cb){let n=0;const t=()=>{if(window.gsap){if(!this._stReg&&window.ScrollTrigger&&window.gsap.registerPlugin){window.gsap.registerPlugin(window.ScrollTrigger);this._stReg=true;}cb(window.gsap);}else if(n++<50){setTimeout(t,60);}else{cb(null);}};t();}
+  killLoops(){(this._loops||[]).forEach(t=>{try{t.kill();}catch(e){}});this._loops=[];}
+
+  onScreenEnter(screen){
+    requestAnimationFrame(()=>this.waitGsap((gsap)=>{
+      if(window.ScrollTrigger&&screen!=='landing'){try{window.ScrollTrigger.getAll().forEach(t=>t.kill());}catch(e){}}
+      this.killLoops();
+      if(screen==='landing')this.animLanding(gsap);
+      else if(screen==='docket')this.animCards(gsap);
+      else if(screen==='detail'||screen==='create'||screen==='claim')this.animEnter(gsap);
+      else if(screen==='adjudicating')this.animAdjudicate(gsap);
+      else if(screen==='verdict')this.animVerdict(gsap);
+    }));
+  }
+
+  animLanding(gsap){
+    if(!gsap)return;
+    if(window.ScrollTrigger)try{window.ScrollTrigger.getAll().forEach(t=>t.kill());}catch(e){}
+    const tl=gsap.timeline({defaults:{ease:'power3.out'}});
+    tl.from('[data-hero-eyebrow]',{y:18,opacity:0,duration:.5})
+      .from('[data-hero-line]',{yPercent:110,opacity:0,duration:.85,stagger:.1},'-=.2')
+      .from('[data-hero-sub]',{y:20,opacity:0,duration:.6},'-=.4')
+      .from('[data-hero-cta]',{y:18,opacity:0,stagger:.09,duration:.5},'-=.35')
+      .from('[data-emblem]',{scale:.6,opacity:0,rotate:-24,duration:1.1,ease:'power4.out'},.15)
+      .from('[data-ticker]',{opacity:0,duration:.6},'-=.3');
+    if(window.ScrollTrigger){
+      gsap.utils.toArray('[data-reveal]').forEach(el=>{
+        gsap.from(el,{scrollTrigger:{trigger:el,start:'top 88%'},y:46,opacity:0,duration:.8,ease:'power3.out'});
+      });
+    }
+  }
+  animCards(gsap){ if(!gsap)return; const els=document.querySelectorAll('[data-card]'); gsap.from(els,{y:28,opacity:0,stagger:.05,duration:.55,ease:'power3.out'}); }
+  animEnter(gsap){ if(!gsap)return;
+    const rv=document.querySelectorAll('[data-reveal]'); if(rv.length)gsap.from(rv,{y:26,opacity:0,stagger:.07,duration:.55,ease:'power3.out'});
+  }
+  animAdjudicate(gsap){
+    const lines=document.querySelectorAll('[data-line]');
+    if(!gsap){lines.forEach(l=>l.style.opacity=1);return;}
+    gsap.from('[data-adj-emblem]',{scale:.7,opacity:0,duration:.7,ease:'power3.out'});
+    gsap.set(lines,{opacity:0,x:-12});
+    gsap.to(lines,{opacity:1,x:0,stagger:.5,duration:.4,ease:'power2.out'});
+    this._loops.push(gsap.to('[data-adj-beam]',{rotation:9,transformOrigin:'50px 34px',duration:.95,yoyo:true,repeat:-1,ease:'sine.inOut'}));
+    this._loops.push(gsap.fromTo('[data-scan]',{yPercent:-120},{yPercent:260,duration:1.5,repeat:-1,ease:'none'}));
+  }
+  animVerdict(gsap){
+    const v=this.state.verdict; if(!v)return;
+    const C=339.292, ring=document.querySelector('[data-conf-ring]'), num=document.querySelector('[data-conf-num]');
+    const finalOff=C*(1-v.confidence/100);
+    if(!gsap){ if(ring)ring.style.strokeDashoffset=finalOff; if(num)num.textContent=v.confidence; return; }
+    if(ring)gsap.set(ring,{strokeDashoffset:C}); if(num)num.textContent='0';
+    const tl=gsap.timeline({defaults:{ease:'power3.out'}});
+    tl.fromTo('[data-verdict-flash]',{opacity:.85},{opacity:0,duration:.7,ease:'power2.in'})
+      .from('[data-verdict-glow]',{scale:.4,opacity:0,duration:.9},0)
+      .from('[data-verdict-seal]',{scale:2.3,opacity:0,rotate:-16,duration:.6,ease:'back.out(1.7)'},.15)
+      .to('[data-verdict-seal]',{keyframes:[{x:-6,duration:.05},{x:6,duration:.05},{x:-4,duration:.05},{x:0,duration:.05}]},'>-.05')
+      .from('[data-verdict-word]',{yPercent:115,opacity:0,duration:.7,ease:'power4.out'},'-=.35');
+    if(ring)tl.to(ring,{strokeDashoffset:finalOff,duration:1.3,ease:'power2.inOut'},'-=.5');
+    if(num)tl.to({v:0},{v:v.confidence,duration:1.3,ease:'power2.inOut',onUpdate:function(){num.textContent=Math.round(this.targets()[0].v);}},'<');
+    tl.from('[data-v-el]',{y:22,opacity:0,stagger:.09,duration:.55},'-=.7');
+  }
+
+  // ---- render ----
+  renderVals(){
+    const s=this.state, self=this;
+    const disp=(c)=>{ const isOpen=c.status==='open'; const m=c.verdict?this.meta(c.verdict.decision):null;
+      return {...c,isOpen,escrowLabel:this.fmt(c,c.escrow),
+        statusLabel:isOpen?'Funded · Open':'Resolved',
+        statusBg:isOpen?'rgba(52,211,153,.14)':'var(--panel2)',
+        statusFg:isOpen?'var(--refund)':'var(--muted)',
+        verdictLabel:m?m.label:'',verdictColor:m?m.color:'var(--muted)',
+        onOpen:()=>self.openCase(c.id)};
+    };
+    const filtered=s.cases.filter(c=>s.docketFilter==='all'?true:c.status===s.docketFilter).map(disp);
+    const mkTab=(key,label)=>{const on=s.docketFilter===key;return{label,onClick:()=>self.setState({docketFilter:key}),
+      bg:on?'linear-gradient(120deg,#5b8cff,#7c5cff)':'transparent',fg:on?'#fff':'var(--muted)',border:on?'transparent':'var(--line2)'};};
+
+    const sc=this.selected();
+    let detailCase={id:'',item:'',category:'',seller:'',buyer:'',created:'',serial:'',escrowLabel:'',statusLabel:'',statusBg:'',statusFg:'',isOpen:false,verdict:null,articles:[],articleCount:0};
+    if(sc){ const d=disp(sc); detailCase={...d,articles:sc.terms.map((t,i)=>({roman:this.roman(i+1),text:t})),articleCount:sc.terms.length,
+      verdictConf:sc.verdict?sc.verdict.confidence:0,verdictReason:sc.verdict?sc.verdict.reason:'',
+      verdictAmount:sc.verdict?this.fmt(sc,sc.verdict.amount):''}; }
+
+    const cf=s.cf;
+    const clauseRows=cf.terms.map((val,i)=>({val,roman:this.roman(i+1),onChange:(e)=>self.updateClause(i,e.target.value),onRemove:()=>self.removeClause(i)}));
+    const previewClauses=cf.terms.map((t,i)=>({roman:this.roman(i+1),text:t.trim()||'— clause to be written —',color:t.trim()?'var(--doc-ink)':'var(--muted)'}));
+    const previewItem=cf.item.trim()||'Untitled Item';
+    const previewMeta=(cf.seller.trim()||'Seller')+' → '+(cf.buyer.trim()||'Buyer')+' · '+(cf.escrow?('$'+Number(cf.escrow).toLocaleString()):'$0');
+
+    const v=s.verdict; const vv=v?{...v,...this.meta(v.decision),amountLabel:this.fmt({currency:v.currency},v.amount)}:{label:'',color:'var(--muted)',glow:'transparent',sub:'',reason:'',amountLabel:'',caseRef:'',item:'',confidence:0};
+
+    const resolved=s.cases.filter(c=>c.verdict);
+    const ticker=resolved.concat(resolved).map(c=>({label:c.id+' · '+this.meta(c.verdict.decision).label+' · '+c.verdict.confidence+'%',color:this.meta(c.verdict.decision).color}));
+    const tickerLoop=ticker.concat(ticker);
+
+    const reasoningLines=['Loading escrow record '+(sc?sc.id:'')+'…','Parsing warranty — '+(sc?sc.terms.length:0)+' articles indexed','Cross-referencing claim against covered components…','Testing exclusion clauses for a matching cause…','Verifying serial and evidence attachments…','Computing confidence distribution…','Sealing the verdict.'];
+
+    return {
+      theme:s.theme,
+      isLanding:s.screen==='landing',isDocket:s.screen==='docket',isDetail:s.screen==='detail',
+      isCreate:s.screen==='create',isClaim:s.screen==='claim',isAdjudicating:s.screen==='adjudicating',isVerdict:s.screen==='verdict',
+      toggleTheme:this.toggleTheme,goHome:this.goHome,goDocket:this.goDocket,goCreate:this.goCreate,goClaim:this.goClaim,
+      backToDetail:this.backToDetail,verdictToCase:this.verdictToCase,runDemo:this.runDemo,replayVerdict:this.replayVerdict,
+      docketRef:this.getRef('docketRef'),detailRef:this.getRef('detailRef'),createRef:this.getRef('createRef'),claimRef:this.getRef('claimRef'),adjRef:this.getRef('adjRef'),verdictRef:this.getRef('verdictRef'),
+      filteredCases:filtered,filterTabs:[mkTab('open','Open'),mkTab('resolved','Resolved'),mkTab('all','All cases')],
+      detailCase,
+      cf,onItem:this.onItem,onCat:this.onCat,onEscrow:this.onEscrow,onSeller:this.onSeller,onBuyer:this.onBuyer,
+      addClause:this.addClause,clauseRows,submitCreate:this.submitCreate,previewClauses,previewItem,previewMeta,
+      claim:s.claim,onIssue:this.onIssue,onEvidence:this.onEvidence,onSerial:this.onSerial,submitClaim:this.submitClaim,
+      vv,tickerLoop,reasoningLines,
+    };
+  }
+}
+</script>
+</body>
+</html>
